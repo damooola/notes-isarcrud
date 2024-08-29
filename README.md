@@ -35,16 +35,21 @@ flutter pub get
 
 1. Add the Isar package to your  `pubspec.yaml` :
 dependencies:
-     isar: ^latest_version
-     isar_flutter_libs: ^latest_version^
-     path_provider: ^latest_version
-     provider: ^latest_version
+
+   - isar: ^latest_version
+   - isar_flutter_libs: ^latest_version^
+   - path_provider: ^latest_version
+   - provider: ^latest_version
 
 dev dependencies:
-     build_runner: ^latest_version
-     isar_generator: ^latest_version
+
+- build_runner: ^latest_version
+- isar_generator: ^l/atest_version
+
 2. Create your Isar model for the notes:
-import 'package:isar/isar.dart';
+
+`sh`
+   import 'package:isa/isar.dart';
 
    part 'note.g.dart';
 

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:isarcrud/components/drawer.dart';
 import 'package:isarcrud/models/note.dart';
 import 'package:isarcrud/models/note_database.dart';
 import 'package:provider/provider.dart';
@@ -100,34 +102,46 @@ class _NotesPageState extends State<NotesPage> {
     List<Note> currentNotes = noteDatabase
         .currentNotes; // why not call context.watch<NoteDatabase>().curentNotes directly?
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        title: const Text("Notes"),
+        backgroundColor: Colors.transparent,
+        foregroundColor: Theme.of(context).colorScheme.inversePrimary,
         centerTitle: true,
+        title: Text(
+          "Notes",
+          style: GoogleFonts.dmSerifText(
+              fontSize: 48,
+              color: Theme.of(context).colorScheme.inversePrimary),
+        ),
+        elevation: 5,
       ),
+      drawer: const MyDrawer(),
       floatingActionButton: FloatingActionButton(
         onPressed: createNote,
         child: const Icon(Icons.add),
       ),
-      body: ListView.builder(
-        itemCount: currentNotes.length,
-        itemBuilder: (context, index) {
-          // each note
-          final note = currentNotes[index];
-          return ListTile(
-            title: Text(note.text),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                    onPressed: () => updateNote(note),
-                    icon: const Icon(Icons.edit)),
-                IconButton(
-                    onPressed: () => deleteNote(note.id),
-                    icon: const Icon(Icons.delete))
-              ],
-            ),
-          );
-        },
+      body: Expanded(
+        child: ListView.builder(
+          itemCount: currentNotes.length,
+          itemBuilder: (context, index) {
+            // each note
+            final note = currentNotes[index];
+            return ListTile(
+              title: Text(note.text),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                      onPressed: () => updateNote(note),
+                      icon: const Icon(Icons.edit)),
+                  IconButton(
+                      onPressed: () => deleteNote(note.id),
+                      icon: const Icon(Icons.delete))
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
