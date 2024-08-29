@@ -57,7 +57,7 @@ flutter pub get
      Id id = Isar.autoIncrement;
 
      late String text;
-   }```
+   }
 
 3. Run the build command to generate the necessary Isar code:
 flutter pub run build_runner build
