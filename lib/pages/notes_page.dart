@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:isarcrud/components/drawer.dart';
+import 'package:isarcrud/components/note_tile.dart';
 import 'package:isarcrud/models/note.dart';
 import 'package:isarcrud/models/note_database.dart';
+import 'package:isarcrud/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
+
+import '../models/note_database.dart';
 
 class NotesPage extends StatefulWidget {
   const NotesPage({super.key});
@@ -17,7 +21,7 @@ class _NotesPageState extends State<NotesPage> {
 
   @override
   void initState() {
-    // on app startup fetch existimng notes
+    // on app startup fetch existing notes
     readNote();
     super.initState();
   }
@@ -31,11 +35,17 @@ class _NotesPageState extends State<NotesPage> {
         content: TextField(
           controller: textController,
         ),
-        actionsAlignment: MainAxisAlignment.spaceBetween,
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text("Cancel")),
+              onPressed: () {
+                textController.clear();
+
+                Navigator.pop(context);
+              },
+              child: Text("Cancel",
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.inversePrimary,
+                  ))),
           //create button
           TextButton(
               onPressed: () {
@@ -44,7 +54,10 @@ class _NotesPageState extends State<NotesPage> {
 
                 Navigator.pop(context);
               },
-              child: const Text("Create")),
+              child: Text("Create",
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.inversePrimary,
+                  ))),
         ],
       ),
     );
@@ -65,12 +78,15 @@ class _NotesPageState extends State<NotesPage> {
         content: TextField(
           controller: textController,
         ),
-        actionsAlignment: MainAxisAlignment.spaceBetween,
+        //actionsAlignment: MainAxisAlignment.spaceBetween,
         actions: [
           //cancel button
           TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text("Cancel")),
+              child: Text("Cancel",
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.inversePrimary,
+                  ))),
           //update button
           TextButton(
               onPressed: () {
@@ -83,7 +99,10 @@ class _NotesPageState extends State<NotesPage> {
 
                 Navigator.pop(context);
               },
-              child: const Text("Update")),
+              child: Text("Update",
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.inversePrimary,
+                  ))),
         ],
       ),
     );
@@ -97,51 +116,54 @@ class _NotesPageState extends State<NotesPage> {
   @override
   Widget build(BuildContext context) {
     final noteDatabase = context.watch<NoteDatabase>();
-
-    //currrent notes
-    List<Note> currentNotes = noteDatabase
-        .currentNotes; // why not call context.watch<NoteDatabase>().curentNotes directly?
+    List<Note> currentNotes = noteDatabase.currentNotes;
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        foregroundColor: Theme.of(context).colorScheme.inversePrimary,
-        centerTitle: true,
-        title: Text(
-          "Notes",
-          style: GoogleFonts.dmSerifText(
-              fontSize: 48,
-              color: Theme.of(context).colorScheme.inversePrimary),
-        ),
         elevation: 5,
       ),
       drawer: const MyDrawer(),
       floatingActionButton: FloatingActionButton(
-        onPressed: createNote,
+        foregroundColor: Theme.of(context).colorScheme.inversePrimary,
+        onPressed:
+            createNote, //Use direct function references (without () =>) when the function doesn’t require any additional parameters.
         child: const Icon(Icons.add),
       ),
-      body: Expanded(
-        child: ListView.builder(
-          itemCount: currentNotes.length,
-          itemBuilder: (context, index) {
-            // each note
-            final note = currentNotes[index];
-            return ListTile(
-              title: Text(note.text),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                      onPressed: () => updateNote(note),
-                      icon: const Icon(Icons.edit)),
-                  IconButton(
-                      onPressed: () => deleteNote(note.id),
-                      icon: const Icon(Icons.delete))
-                ],
-              ),
-            );
-          },
-        ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Heading
+          Padding(
+            padding: const EdgeInsets.only(left: 25.0),
+            child: Text(
+              "Notes",
+              style: GoogleFonts.dmSerifText(
+                  fontSize: 48,
+                  color: Theme.of(context).colorScheme.inversePrimary),
+            ),
+          ),
+          Expanded(
+            //Expanded must be a child of a row/column
+            child: ListView.builder(
+              itemCount: currentNotes.length,
+              itemBuilder: (context, index) {
+                // each note
+                final note = currentNotes[index];
+                return NoteTile(
+                    text: note.text,
+                    onEdit: () {
+                      Navigator.pop(context);
+                      updateNote(note);
+                    }, //Use () => when passing functions that need specific arguments.
+                    onDelete: () {
+                      Navigator.pop(context);
+                      deleteNote(note.id);
+                    });
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

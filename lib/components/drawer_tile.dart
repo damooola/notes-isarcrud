@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class MyListTile extends StatelessWidget {
+class DrawerTile extends StatelessWidget {
   final String text;
   final Icon icon;
   final void Function()? onTap;
-  const MyListTile(
+  const DrawerTile(
       {super.key, required this.text, required this.icon, required this.onTap});
 
   @override

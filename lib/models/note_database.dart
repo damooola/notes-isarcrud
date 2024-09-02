@@ -15,6 +15,8 @@ class NoteDatabase extends ChangeNotifier {
 
   // create a new note and save to database
   Future<void> addNote(String textfromuser) async {
+
+    // create a new Note object and set its text to textFromUser
     final newNote = Note()..text = textfromuser;
 
     // save to database
